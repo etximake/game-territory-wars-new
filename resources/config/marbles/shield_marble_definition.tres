@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MarbleDefinition" load_steps=3 format=3 uid="uid://c3ebi6gpmmc6e"]
+
+[ext_resource type="Script" uid="uid://pui4toqxpaca" path="res://scripts/resources/marble_definition.gd" id="1"]
+
+[sub_resource type="Resource" id="1"]
+
+[resource]
+script = ExtResource("1")
+marble_id = &"shield"
+display_name = "Shield Marble"
+role = "Defender / Anchor"
+core_fantasy = "Hold ground, resist displacement, and secure fresh captures."
+stats = SubResource("1")
+passive_slot_id = &"passive.shield_knockback_guard"
+active_slot_id = &"active.shield_burst"
+territory_effect_slot_id = &"territory.shield_anti_recapture"
+weakness_hook_id = &"counter.shield_low_expand"
+visual_profile_id = &"visual.shield_shell"
+visual_primary_color = Color(0.73, 1, 0.83, 1)
+visual_secondary_color = Color(0.18, 0.42, 0.28, 1)
+trail_color = Color(0.73, 1, 0.83, 1)
+readability_notes = "Heavy shell, shielded green core, dense protected trail."

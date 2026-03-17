@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MarbleDefinition" load_steps=3 format=3 uid="uid://c2s5x1m4tlyab"]
+
+[ext_resource type="Script" uid="uid://pui4toqxpaca" path="res://scripts/resources/marble_definition.gd" id="1"]
+
+[sub_resource type="Resource" id="1"]
+
+[resource]
+script = ExtResource("1")
+marble_id = &"magnet"
+display_name = "Magnet Marble"
+role = "Utility / Controller"
+core_fantasy = "Distort nearby space, disrupt routes, and bias contested zones."
+stats = SubResource("1")
+passive_slot_id = &"passive.magnet_pickup_pull"
+active_slot_id = &"active.magnet_short_pull"
+territory_effect_slot_id = &"territory.magnet_resource_drift"
+weakness_hook_id = &"counter.magnet_low_damage"
+visual_profile_id = &"visual.magnet_shell"
+visual_primary_color = Color(0.82, 0.93, 1, 1)
+visual_secondary_color = Color(0.24, 0.28, 0.45, 1)
+trail_color = Color(0.68, 0.85, 1, 1)
+readability_notes = "Electric shell, pale metallic core, unstable orbit trail."

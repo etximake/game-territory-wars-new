@@ -12,7 +12,32 @@ config_version=5
 
 config/name="game-territory-wars-new.v1.0"
 config/features=PackedStringArray("4.5", "Mobile")
+run/main_scene="res://scenes/app/app_root.tscn"
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameConstants="*res://scripts/autoload/game_constants.gd"
+
+[input]
+
+match_start={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":32,"physical_keycode":0,"key_label":32,"unicode":32,"location":0,"echo":false)]
+}
+match_restart={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":82,"physical_keycode":0,"key_label":82,"unicode":114,"location":0,"echo":false)]
+}
+
+[layer_names]
+
+2d_physics/layer_1="world"
+2d_physics/layer_2="marble"
+2d_physics/layer_3="projectile"
+2d_physics/layer_4="territory_sensor"
+2d_physics/layer_5="pickup"
+2d_physics/layer_6="camera_blocker"
 
 [rendering]
 

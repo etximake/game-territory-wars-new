@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="MarbleDefinition" load_steps=3 format=3 uid="uid://comkljjlucqxe"]
+
+[ext_resource type="Script" uid="uid://pui4toqxpaca" path="res://scripts/resources/marble_definition.gd" id="1"]
+
+[sub_resource type="Resource" id="1"]
+
+[resource]
+script = ExtResource("1")
+marble_id = &"ice"
+display_name = "Ice Marble"
+role = "Defender / Controller"
+core_fantasy = "Slow the pace, lock hot zones, and keep territory stable."
+stats = SubResource("1")
+passive_slot_id = &"passive.ice_first_hit_slow"
+active_slot_id = &"active.ice_freeze_pulse"
+territory_effect_slot_id = &"territory.ice_slow_zone"
+weakness_hook_id = &"counter.ice_low_snowball"
+visual_profile_id = &"visual.ice_shell"
+visual_primary_color = Color(0.65, 0.93, 1, 1)
+visual_secondary_color = Color(0.19, 0.43, 0.64, 1)
+trail_color = Color(0.7, 0.93, 1, 1)
+readability_notes = "Cool shell, pale frozen core, crisp icy trail."
