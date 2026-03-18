@@ -13,56 +13,255 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="PanelContainer" type="PanelContainer" parent="Control"]
+[node name="TopBar" type="PanelContainer" parent="Control"]
 layout_mode = 1
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 420.0
-offset_bottom = 420.0
+offset_left = 18.0
+offset_top = 16.0
+offset_right = 700.0
+offset_bottom = 74.0
+modulate = Color(1, 1, 1, 0.9)
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/PanelContainer"]
+[node name="TopMargin" type="MarginContainer" parent="Control/TopBar"]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/PanelContainer/MarginContainer"]
+[node name="TopRow" type="HBoxContainer" parent="Control/TopBar/TopMargin"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="PhaseLabel" type="Label" parent="Control/TopBar/TopMargin/TopRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Phase: Setup"
+
+[node name="TimerLabel" type="Label" parent="Control/TopBar/TopMargin/TopRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "03:00"
+
+[node name="SeedLabel" type="Label" parent="Control/TopBar/TopMargin/TopRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Seed: --"
+
+[node name="CameraLabel" type="Label" parent="Control/TopBar/TopMargin/TopRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Cam: Gameplay"
+
+[node name="OwnershipPanel" type="PanelContainer" parent="Control"]
+layout_mode = 1
+offset_left = 18.0
+offset_top = 84.0
+offset_right = 420.0
+offset_bottom = 150.0
+modulate = Color(1, 1, 1, 0.88)
+
+[node name="OwnershipMargin" type="MarginContainer" parent="Control/OwnershipPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="OwnershipVBox" type="VBoxContainer" parent="Control/OwnershipPanel/OwnershipMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="LeaderLabel" type="Label" parent="Control/OwnershipPanel/OwnershipMargin/OwnershipVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Leader: --"
+
+[node name="MomentumLabel" type="Label" parent="Control/OwnershipPanel/OwnershipMargin/OwnershipVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Momentum: --"
+
+[node name="OwnershipLabel" type="Label" parent="Control/OwnershipPanel/OwnershipMargin/OwnershipVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Ownership: --"
+autowrap_mode = 3
+
+[node name="ScorePanel" type="PanelContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -278.0
+offset_top = 16.0
+offset_right = -18.0
+offset_bottom = 210.0
+modulate = Color(1, 1, 1, 0.9)
+
+[node name="ScoreMargin" type="MarginContainer" parent="Control/ScorePanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScoreVBox" type="VBoxContainer" parent="Control/ScorePanel/ScoreMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ScoreTitleLabel" type="Label" parent="Control/ScorePanel/ScoreMargin/ScoreVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Scoreboard"
+
+[node name="ScoreboardLabel" type="Label" parent="Control/ScorePanel/ScoreMargin/ScoreVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 12
+text = "Scores:"
+vertical_alignment = 0
+autowrap_mode = 3
+
+[node name="ReadabilityLabel" type="Label" parent="Control/ScorePanel/ScoreMargin/ScoreVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Readability"
+autowrap_mode = 3
+
+[node name="BuildPanel" type="PanelContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -240.0
+offset_top = -220.0
+offset_right = 240.0
+offset_bottom = -64.0
+modulate = Color(1, 1, 1, 0.94)
+
+[node name="BuildMargin" type="MarginContainer" parent="Control/BuildPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 12
+
+[node name="BuildVBox" type="VBoxContainer" parent="Control/BuildPanel/BuildMargin"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TitleLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="BuildTitleLabel" type="Label" parent="Control/BuildPanel/BuildMargin/BuildVBox"]
 layout_mode = 2
-text = "Prototype Match Debug"
+theme_override_font_sizes/font_size = 14
+text = "Build Select"
 
-[node name="PhaseLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="BuildHintLabel" type="Label" parent="Control/BuildPanel/BuildMargin/BuildVBox"]
 layout_mode = 2
-text = "Phase: Setup"
+theme_override_font_sizes/font_size = 10
+text = "B toggle builds"
 
-[node name="TimerLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="BuildListLabel" type="Label" parent="Control/BuildPanel/BuildMargin/BuildVBox"]
 layout_mode = 2
-text = "Timer: --:--"
-
-[node name="SeedLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Seed: --"
-
-[node name="LeaderLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-text = "Leader: --"
-
-[node name="ScoreboardLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Scores:"
+theme_override_font_sizes/font_size = 11
+text = "Builds"
 vertical_alignment = 0
+autowrap_mode = 3
 
-[node name="TerritoryLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-text = "Territory:"
-vertical_alignment = 0
+[node name="EventBanner" type="PanelContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 10
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -24.0
+offset_right = 240.0
+offset_bottom = 24.0
+modulate = Color(1, 1, 1, 0.95)
 
-[node name="HintLabel" type="Label" parent="Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="EventLabel" type="Label" parent="Control/EventBanner"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -12.0
+offset_right = 210.0
+offset_bottom = 12.0
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 18
+text = "Event"
+
+[node name="HintLabel" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -34.0
+offset_right = 180.0
+offset_bottom = -14.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 10
+text = "Space start | R restart | C camera | B builds"
+
+[node name="ResultPanel" type="PanelContainer" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -110.0
+offset_right = 220.0
+offset_bottom = 110.0
+modulate = Color(1, 1, 1, 0.96)
+
+[node name="ResultMargin" type="MarginContainer" parent="Control/ResultPanel"]
 layout_mode = 2
-text = "Space: start match | R: restart match"
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 14
+
+[node name="ResultVBox" type="VBoxContainer" parent="Control/ResultPanel/ResultMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ResultTitleLabel" type="Label" parent="Control/ResultPanel/ResultMargin/ResultVBox"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+text = "Match Result"
+
+[node name="ResultWinnerLabel" type="Label" parent="Control/ResultPanel/ResultMargin/ResultVBox"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+text = "Winner"
+
+[node name="ResultReasonLabel" type="Label" parent="Control/ResultPanel/ResultMargin/ResultVBox"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 11
+text = "Reason"
+
+[node name="ResultScoresLabel" type="Label" parent="Control/ResultPanel/ResultMargin/ResultVBox"]
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 11
+text = "Results"
+autowrap_mode = 3

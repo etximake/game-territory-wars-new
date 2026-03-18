@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_id = &"weapon.laser"
+display_name = "Laser"
+category = "precision"
+damage = 12.0
+range = 300.0
+cooldown_seconds = 1.55
+impact_force = 80.0
+pressure_bonus = 0.1
+pressure_duration_seconds = 1.1
+slow_duration_seconds = 1.15
+slow_multiplier = 0.68
+influence_bonus = 0.2
+readability_color = Color(0.78, 0.95, 1, 1)
+readability_notes = "Long lane control and crisp slow support."

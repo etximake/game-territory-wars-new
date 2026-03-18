@@ -1,8 +1,26 @@
-[gd_resource type="Resource" script_class="MarbleDefinition" load_steps=3 format=3 uid="uid://bjdpnkege5hhs"]
+[gd_resource type="Resource" script_class="MarbleDefinition" load_steps=4 format=3 uid="uid://bjdpnkege5hhs"]
 
 [ext_resource type="Script" uid="uid://pui4toqxpaca" path="res://scripts/resources/marble_definition.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/resources/marble_stats.gd" id="2"]
 
 [sub_resource type="Resource" id="1"]
+script = ExtResource("2")
+move_speed = 155.0
+acceleration = 470.0
+friction = 250.0
+mass = 0.95
+collision_force = 1.15
+knockback_resistance = 0.9
+durability = 92.0
+defense_modifier = 0.95
+body_radius = 24.0
+influence_radius = 124.0
+neutral_capture_rate = 1.25
+enemy_reclaim_rate = 1.08
+active_cooldown_seconds = 7.0
+active_duration_seconds = 2.2
+territory_effect_radius = 132.0
+territory_effect_strength = 1.2
 
 [resource]
 script = ExtResource("1")

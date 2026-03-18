@@ -1,838 +1,162 @@
 # Stat Sheet v0.1
-> Mục tiêu: khóa bộ thông số khởi đầu để test prototype cho 5 marble + 5 weapon.  
-> Lưu ý: đây là bộ số để test gameplay, không phải số cuối cùng để release.  
-> Luật lõi bắt buộc giữ nguyên:
-> - Territory là trung tâm
-> - Marble quyết định bản sắc chiến thuật
-> - Weapon quyết định cách gây áp lực
-> - Build phải dễ đọc khi chơi và khi xem video
-> - Mọi stat phải phục vụ simulation/content moment, không chỉ combat
+> Muc tieu: khoa bo thong so khoi dau de test prototype cho 5 marble + 5 weapon.
+> Day la bo so dung cho prototype validation, uu tien territory-centric + readability truoc complexity.
 
 ---
 
 # 1. Global Balance Rules
 
 ## 1.1. Core Rules
-- Không có marble nào mạnh toàn diện.
-- Không có weapon nào thay thế vai trò của marble core.
-- Chiếm neutral territory phải nhanh hơn cướp enemy territory.
-- Territory effect chỉ nên ảnh hưởng rõ vào 1 hướng chính.
-- Readability quan trọng hơn complexity.
+- Khong co marble nao manh toan dien.
+- Weapon khong duoc thay the vai tro core cua marble.
+- Chiem neutral territory phai nhanh hon cuop enemy territory.
+- Territory effect chi nen anh huong ro vao 1 huong chinh.
+- Readability quan trong hon complexity.
 
 ## 1.2. Prototype Balance Goal
-Bộ stat đầu phải đủ để test:
-- sự khác nhau giữa 5 marble
-- sự khác nhau giữa 5 weapon
-- sự khác nhau giữa các build
-- nhịp tranh chấp territory
-- khả năng sinh content moment
-
-## 1.3. Tuning Convention
-- Base line mặc định = 1.00
-- Dưới 1.00 = yếu hơn mức chuẩn
-- Trên 1.00 = mạnh hơn mức chuẩn
+- 5 marble phai tao khac biet role de xem va de test.
+- 5 weapon phai tao pairing ro de sinh content moment.
+- Territory phai la score source chinh, combat la cong cu shift territory.
 
 ---
 
 # 2. Match Baseline
 
 ## 2.1. Match Duration
-- Target Match Length:
-- Overtime Rule:
-- Respawn Delay:
-- Score Target:
-- Territory Weight in Final Score:
-- Kill/Elimination Weight:
-- Objective Bonus Weight:
+- Target Match Length: 240s
+- Overtime Rule: none
+- Respawn Delay: 2.8s
+- Score Target: 150
+- Territory Weight in Final Score: 12.0 / tick
+- Kill/Elimination Weight: 8.0
+- Objective Bonus Weight: control streak 3.0 | territory steal 10.0
 
 ## 2.2. Territory Baseline
-- Neutral Capture Time:
-- Enemy Reclaim Time:
-- Contested Zone Speed Modifier:
-- Newly Captured Territory Protection Time:
-- Territory Decay Rule:
-- Territory Stability Baseline:
+- Neutral Capture Time: 1.2s
+- Enemy Reclaim Time: 2.4s
+- Contested Zone Speed Modifier: 0.35x
+- Newly Captured Territory Protection Time: 1.6s
+- Territory Decay Rule: none
+- Territory Stability Baseline: neutral fast, owned stable, protected anti-recapture short window
 
 ## 2.3. Movement Baseline
-- Base Move Speed:
-- Base Acceleration:
-- Base Friction:
-- Base Turn Control:
-- Base Collision Force:
-- Base Knockback Taken:
+- Base Move Speed Band: 122 - 155
+- Base Acceleration Band: 340 - 470
+- Base Friction Band: 240 - 320
+- Base Collision Force Band: 0.90 - 1.15
+- Base Knockback Resistance Band: 0.88 - 1.45
 
 ---
 
-# 3. Marble Stat Categories
-
-## 3.1. Required Fields per Marble
-- Name
-- Role
-- Core Fantasy
-- Difficulty
-- Move Speed
-- Acceleration
-- Mass
-- Collision Force
-- Knockback Resistance
-- Durability / HP
-- Defense Modifier
-- Neutral Territory Capture Rate
-- Enemy Territory Reclaim Rate
-- Passive Name
-- Passive Power
-- Active Name
-- Active Cooldown
-- Active Duration
-- Active Range / Radius
-- Territory Effect Type
-- Territory Effect Radius
-- Territory Effect Strength
-- Recovery / Downtime
-- Best Weapon Pairings
-- Weakness
-- Readability Notes
-- YouTube Hook
-- Balance Notes
-
----
-
-# 4. Marble Table Summary
+# 3. Marble Table Summary
 
 | Marble | Role | Speed | Durability | Capture | Reclaim | Passive Power | Active Cooldown | Territory Effect | Difficulty | Notes |
 |---|---|---:|---:|---:|---:|---:|---:|---|---|---|
-| Fire |  |  |  |  |  |  |  |  |  |  |
-| Ice |  |  |  |  |  |  |  |  |  |  |
-| Magnet |  |  |  |  |  |  |  |  |  |  |
-| Shield |  |  |  |  |  |  |  |  |  |  |
-| Storm |  |  |  |  |  |  |  |  |  |  |
+| Fire | Attacker / Corruptor | 155 | 92 | 1.25 | 1.08 | burn pressure | 7.0s | fire pressure | Medium | Expand nhanh, giu dat kem |
+| Ice | Defender / Controller | 126 | 108 | 0.96 | 1.10 | first hit slow | 7.6s | slow zone | Medium | Giu diem nong, snowball kem |
+| Magnet | Utility / Controller | 138 | 96 | 1.08 | 1.04 | pull utility | 6.8s | resource drift | Medium | Contested bias, damage thap |
+| Shield | Defender / Anchor | 122 | 116 | 0.90 | 1.16 | guard on impact | 8.2s | anti-recapture | Easy | Giu dat rat tot, mo rong cham |
+| Storm | Disruptor / Controller | 148 | 94 | 1.02 | 1.06 | deflect drift | 6.9s | push current | Hard | Tao chaos co kiem soat |
 
 ---
 
-# 5. Detailed Marble Sheets
+# 4. Detailed Marble Notes
 
-## 5.1. Fire Marble
+## Fire Marble
+- Core Fantasy: Expand fast, pressure neutral space, threaten fresh front lines.
+- Base Stats: speed 155 | accel 470 | mass 0.95 | collision 1.15 | KB resist 0.90 | HP 92 | defense 0.95
+- Territory Stats: neutral 1.25 | reclaim 1.08 | effect radius 132 | effect strength 1.20
+- Passive: `passive.fire_burn`
+- Active: `active.fire_overheat_burst` | cooldown 7.0s | duration 2.2s
+- Pairing Watch: rat hop Cannon de pha cum, hop Shield Device kem hon vi lam giam nhip pressure.
+- Readability: do/cam, hot core, trail nong.
+- Current Test Note: co nguy co snowball neutral side qua nhanh neu contested thap.
 
-### Identity
-- Name: Fire Marble
-- Role:
-- Core Fantasy:
-- Difficulty:
-- YouTube Hook:
+## Ice Marble
+- Core Fantasy: Slow pace, lock hot zones, keep territory stable.
+- Base Stats: speed 126 | accel 360 | mass 1.05 | collision 0.95 | KB resist 1.18 | HP 108 | defense 1.08
+- Territory Stats: neutral 0.96 | reclaim 1.10 | effect radius 140 | effect strength 1.18
+- Passive: `passive.ice_first_hit_slow`
+- Active: `active.ice_freeze_pulse` | cooldown 7.6s | duration 1.8s
+- Pairing Watch: Laser la pairing ro nhat cho lane/choke control.
+- Readability: xanh bang, pale core, crisp trail.
+- Current Test Note: can watch xem phong thu co bi an hinh boi territory colors hay khong.
 
-### Base Stats
-- Move Speed:
-- Acceleration:
-- Mass:
-- Collision Force:
-- Knockback Resistance:
-- Durability / HP:
-- Defense Modifier:
+## Magnet Marble
+- Core Fantasy: Distort nearby space, disrupt routes, bias contested zones.
+- Base Stats: speed 138 | accel 410 | mass 1.00 | collision 0.90 | KB resist 0.98 | HP 96 | defense 0.98
+- Territory Stats: neutral 1.08 | reclaim 1.04 | effect radius 136 | effect strength 1.16
+- Passive: `passive.magnet_pickup_pull`
+- Active: `active.magnet_short_pull` | cooldown 6.8s | duration 1.7s
+- Pairing Watch: Magnet Device la utility pairing dung fantasy nhat.
+- Readability: metallic pale core, orbit trail, pull feedback.
+- Current Test Note: damage thap, can watch xem utility co du de dat vao score khong.
 
-### Territory Stats
-- Neutral Territory Capture Rate:
-- Enemy Territory Reclaim Rate:
-- Territory Hold Strength:
-- Territory Vulnerability:
-- Territory Pressure Bonus:
+## Shield Marble
+- Core Fantasy: Hold ground, resist displacement, secure fresh captures.
+- Base Stats: speed 122 | accel 340 | mass 1.25 | collision 1.05 | KB resist 1.45 | HP 116 | defense 1.16
+- Territory Stats: neutral 0.90 | reclaim 1.16 | effect radius 132 | effect strength 1.24
+- Passive: `passive.shield_knockback_guard`
+- Active: `active.shield_burst` | cooldown 8.2s | duration 1.9s
+- Pairing Watch: Gun va Shield Device deu hop, Gun doc tran tot hon.
+- Readability: green shell, hex guard motif, dense hold trail.
+- Current Test Note: can watch anti-recapture co bi kho doc trong contested zones hay khong.
 
-### Passive
-- Passive Name:
-- Passive Description:
-- Passive Trigger:
-- Passive Power:
-- Passive Duration:
-- Passive Cooldown/Internal Cooldown:
-
-### Active
-- Active Name:
-- Active Description:
-- Active Trigger:
-- Active Cooldown:
-- Active Duration:
-- Active Radius / Range:
-- Active Risk / Drawback:
-
-### Territory Effect
-- Effect Type:
-- Effect Description:
-- Effect Radius:
-- Effect Strength:
-- Effect Duration:
-- Effect Visual Priority:
-
-### Pairings
-- Best Weapon Pairings:
-- Bad Weapon Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Main Color:
-- Core Glow:
-- Trail Type:
-- Hit Effect:
-- Active Effect:
-- Territory Overlay:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
+## Storm Marble
+- Core Fantasy: Create directional chaos, shift fights, open map swings.
+- Base Stats: speed 148 | accel 455 | mass 0.92 | collision 1.08 | KB resist 0.88 | HP 94 | defense 0.94
+- Territory Stats: neutral 1.02 | reclaim 1.06 | effect radius 140 | effect strength 1.22
+- Passive: `passive.storm_deflect`
+- Active: `active.storm_wind_surge` | cooldown 6.9s | duration 1.65s
+- Pairing Watch: Cannon la pairing content moment manh nhat.
+- Readability: wind-bright core, sweeping motion trail.
+- Current Test Note: can watch neu chaos day contested nhieu qua, readability se giam.
 
 ---
 
-## 5.2. Ice Marble
+# 5. Weapon Table Summary
 
-### Identity
-- Name: Ice Marble
-- Role:
-- Core Fantasy:
-- Difficulty:
-- YouTube Hook:
-
-### Base Stats
-- Move Speed:
-- Acceleration:
-- Mass:
-- Collision Force:
-- Knockback Resistance:
-- Durability / HP:
-- Defense Modifier:
-
-### Territory Stats
-- Neutral Territory Capture Rate:
-- Enemy Territory Reclaim Rate:
-- Territory Hold Strength:
-- Territory Vulnerability:
-- Territory Pressure Bonus:
-
-### Passive
-- Passive Name:
-- Passive Description:
-- Passive Trigger:
-- Passive Power:
-- Passive Duration:
-- Passive Cooldown/Internal Cooldown:
-
-### Active
-- Active Name:
-- Active Description:
-- Active Trigger:
-- Active Cooldown:
-- Active Duration:
-- Active Radius / Range:
-- Active Risk / Drawback:
-
-### Territory Effect
-- Effect Type:
-- Effect Description:
-- Effect Radius:
-- Effect Strength:
-- Effect Duration:
-- Effect Visual Priority:
-
-### Pairings
-- Best Weapon Pairings:
-- Bad Weapon Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Main Color:
-- Core Glow:
-- Trail Type:
-- Hit Effect:
-- Active Effect:
-- Territory Overlay:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
+| Weapon | Category | Range | Damage | Knockback | Splash | Cooldown | Territory Support | Best Pairing | Notes |
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+| Gun | sustain_pressure | 220 | 15 | 120 | 0 | 1.1s | medium | Shield | On dinh, de doc |
+| Laser | precision | 300 | 12 | 80 | 0 | 1.55s | high lane control | Ice | Slow ro, lane control tot |
+| Cannon | aoe | 255 | 26 | 240 | 118 | 2.7s | break clusters | Fire / Storm | Burst cao, content moment manh |
+| Magnet Device | disruption | 235 | 10 | 60 | 92 | 2.1s | contested bias | Magnet | Pull utility ro |
+| Shield Device | defensive_utility | 170 | 6 | 40 | 0 | 2.4s | stability support | Shield | Def utility, anti-recapture support |
 
 ---
 
-## 5.3. Magnet Marble
-
-### Identity
-- Name: Magnet Marble
-- Role:
-- Core Fantasy:
-- Difficulty:
-- YouTube Hook:
-
-### Base Stats
-- Move Speed:
-- Acceleration:
-- Mass:
-- Collision Force:
-- Knockback Resistance:
-- Durability / HP:
-- Defense Modifier:
-
-### Territory Stats
-- Neutral Territory Capture Rate:
-- Enemy Territory Reclaim Rate:
-- Territory Hold Strength:
-- Territory Vulnerability:
-- Territory Pressure Bonus:
-
-### Passive
-- Passive Name:
-- Passive Description:
-- Passive Trigger:
-- Passive Power:
-- Passive Duration:
-- Passive Cooldown/Internal Cooldown:
-
-### Active
-- Active Name:
-- Active Description:
-- Active Trigger:
-- Active Cooldown:
-- Active Duration:
-- Active Radius / Range:
-- Active Risk / Drawback:
-
-### Territory Effect
-- Effect Type:
-- Effect Description:
-- Effect Radius:
-- Effect Strength:
-- Effect Duration:
-- Effect Visual Priority:
-
-### Pairings
-- Best Weapon Pairings:
-- Bad Weapon Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Main Color:
-- Core Glow:
-- Trail Type:
-- Hit Effect:
-- Active Effect:
-- Territory Overlay:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-## 5.4. Shield Marble
-
-### Identity
-- Name: Shield Marble
-- Role:
-- Core Fantasy:
-- Difficulty:
-- YouTube Hook:
-
-### Base Stats
-- Move Speed:
-- Acceleration:
-- Mass:
-- Collision Force:
-- Knockback Resistance:
-- Durability / HP:
-- Defense Modifier:
-
-### Territory Stats
-- Neutral Territory Capture Rate:
-- Enemy Territory Reclaim Rate:
-- Territory Hold Strength:
-- Territory Vulnerability:
-- Territory Pressure Bonus:
-
-### Passive
-- Passive Name:
-- Passive Description:
-- Passive Trigger:
-- Passive Power:
-- Passive Duration:
-- Passive Cooldown/Internal Cooldown:
-
-### Active
-- Active Name:
-- Active Description:
-- Active Trigger:
-- Active Cooldown:
-- Active Duration:
-- Active Radius / Range:
-- Active Risk / Drawback:
-
-### Territory Effect
-- Effect Type:
-- Effect Description:
-- Effect Radius:
-- Effect Strength:
-- Effect Duration:
-- Effect Visual Priority:
-
-### Pairings
-- Best Weapon Pairings:
-- Bad Weapon Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Main Color:
-- Core Glow:
-- Trail Type:
-- Hit Effect:
-- Active Effect:
-- Territory Overlay:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-## 5.5. Storm Marble
-
-### Identity
-- Name: Storm Marble
-- Role:
-- Core Fantasy:
-- Difficulty:
-- YouTube Hook:
-
-### Base Stats
-- Move Speed:
-- Acceleration:
-- Mass:
-- Collision Force:
-- Knockback Resistance:
-- Durability / HP:
-- Defense Modifier:
-
-### Territory Stats
-- Neutral Territory Capture Rate:
-- Enemy Territory Reclaim Rate:
-- Territory Hold Strength:
-- Territory Vulnerability:
-- Territory Pressure Bonus:
-
-### Passive
-- Passive Name:
-- Passive Description:
-- Passive Trigger:
-- Passive Power:
-- Passive Duration:
-- Passive Cooldown/Internal Cooldown:
-
-### Active
-- Active Name:
-- Active Description:
-- Active Trigger:
-- Active Cooldown:
-- Active Duration:
-- Active Radius / Range:
-- Active Risk / Drawback:
-
-### Territory Effect
-- Effect Type:
-- Effect Description:
-- Effect Radius:
-- Effect Strength:
-- Effect Duration:
-- Effect Visual Priority:
-
-### Pairings
-- Best Weapon Pairings:
-- Bad Weapon Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Main Color:
-- Core Glow:
-- Trail Type:
-- Hit Effect:
-- Active Effect:
-- Territory Overlay:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-# 6. Weapon Stat Categories
-
-## 6.1. Required Fields per Weapon
-- Name
-- Category
-- Weapon Fantasy
-- Damage Profile
-- Pressure Type
-- Range
-- Fire Rate
-- Damage per Hit
-- DPS Target
-- Projectile Speed
-- Accuracy / Spread
-- Splash Radius
-- Knockback
-- Charge Time
-- Cooldown
-- Ammo / Heat / Resource Rule
-- Territory Support Value
-- Best Marble Pairings
-- Weakness
-- Readability Notes
-- YouTube Hook
-- Balance Notes
-
----
-
-# 7. Weapon Table Summary
-
-| Weapon | Category | Range | Fire Rate | Damage | Knockback | Splash | Cooldown | Territory Support | Best Pairing | Notes |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|
-| Gun |  |  |  |  |  |  |  |  |  |  |
-| Laser |  |  |  |  |  |  |  |  |  |  |
-| Cannon |  |  |  |  |  |  |  |  |  |  |
-| Magnet Device |  |  |  |  |  |  |  |  |  |  |
-| Shield Device |  |  |  |  |  |  |  |  |  |  |
-
----
-
-# 8. Detailed Weapon Sheets
-
-## 8.1. Gun
-
-### Identity
-- Name: Gun
-- Category:
-- Weapon Fantasy:
-- YouTube Hook:
-
-### Core Stats
-- Range:
-- Fire Rate:
-- Damage per Hit:
-- DPS Target:
-- Projectile Speed:
-- Accuracy / Spread:
-- Knockback:
-- Splash Radius:
-- Charge Time:
-- Cooldown:
-- Ammo / Heat Rule:
-
-### Territory Interaction
-- Territory Support Value:
-- Best Territory Use:
-- Weak Territory Use:
-- Contested Zone Value:
-
-### Pairings
-- Best Marble Pairings:
-- Bad Marble Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Projectile/Beam Type:
-- Fire Effect:
-- Hit Effect:
-- Sound Profile:
-- Spectator Readability Note:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-## 8.2. Laser
-
-### Identity
-- Name: Laser
-- Category:
-- Weapon Fantasy:
-- YouTube Hook:
-
-### Core Stats
-- Range:
-- Fire Rate:
-- Damage per Hit:
-- DPS Target:
-- Projectile Speed:
-- Accuracy / Spread:
-- Knockback:
-- Splash Radius:
-- Charge Time:
-- Cooldown:
-- Ammo / Heat Rule:
-
-### Territory Interaction
-- Territory Support Value:
-- Best Territory Use:
-- Weak Territory Use:
-- Contested Zone Value:
-
-### Pairings
-- Best Marble Pairings:
-- Bad Marble Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Projectile/Beam Type:
-- Fire Effect:
-- Hit Effect:
-- Sound Profile:
-- Spectator Readability Note:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-## 8.3. Cannon
-
-### Identity
-- Name: Cannon
-- Category:
-- Weapon Fantasy:
-- YouTube Hook:
-
-### Core Stats
-- Range:
-- Fire Rate:
-- Damage per Hit:
-- DPS Target:
-- Projectile Speed:
-- Accuracy / Spread:
-- Knockback:
-- Splash Radius:
-- Charge Time:
-- Cooldown:
-- Ammo / Heat Rule:
-
-### Territory Interaction
-- Territory Support Value:
-- Best Territory Use:
-- Weak Territory Use:
-- Contested Zone Value:
-
-### Pairings
-- Best Marble Pairings:
-- Bad Marble Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Projectile/Beam Type:
-- Fire Effect:
-- Hit Effect:
-- Sound Profile:
-- Spectator Readability Note:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-## 8.4. Magnet Device
-
-### Identity
-- Name: Magnet Device
-- Category:
-- Weapon Fantasy:
-- YouTube Hook:
-
-### Core Stats
-- Range:
-- Fire Rate:
-- Damage per Hit:
-- DPS Target:
-- Projectile Speed:
-- Accuracy / Spread:
-- Knockback:
-- Splash Radius:
-- Charge Time:
-- Cooldown:
-- Ammo / Heat Rule:
-
-### Territory Interaction
-- Territory Support Value:
-- Best Territory Use:
-- Weak Territory Use:
-- Contested Zone Value:
-
-### Pairings
-- Best Marble Pairings:
-- Bad Marble Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Projectile/Beam Type:
-- Fire Effect:
-- Hit Effect:
-- Sound Profile:
-- Spectator Readability Note:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-## 8.5. Shield Device
-
-### Identity
-- Name: Shield Device
-- Category:
-- Weapon Fantasy:
-- YouTube Hook:
-
-### Core Stats
-- Range:
-- Fire Rate:
-- Damage per Hit:
-- DPS Target:
-- Projectile Speed:
-- Accuracy / Spread:
-- Knockback:
-- Splash Radius:
-- Charge Time:
-- Cooldown:
-- Ammo / Heat Rule:
-
-### Territory Interaction
-- Territory Support Value:
-- Best Territory Use:
-- Weak Territory Use:
-- Contested Zone Value:
-
-### Pairings
-- Best Marble Pairings:
-- Bad Marble Pairings:
-- Best Matchups:
-- Worst Matchups:
-
-### Readability
-- Projectile/Beam Type:
-- Fire Effect:
-- Hit Effect:
-- Sound Profile:
-- Spectator Readability Note:
-
-### Balance Notes
-- Intended Strength:
-- Intended Weakness:
-- Tuning Watchouts:
-- Current Test Notes:
-
----
-
-# 9. Build Combination Review
-
-## 9.1. Core Build Matrix
+# 6. Build Combination Review
 
 | Marble \ Weapon | Gun | Laser | Cannon | Magnet Device | Shield Device |
 |---|---|---|---|---|---|
-| Fire |  |  |  |  |  |
-| Ice |  |  |  |  |  |
-| Magnet |  |  |  |  |  |
-| Shield |  |  |  |  |  |
-| Storm |  |  |  |  |  |
+| Fire | ok pressure | niche | strong | utility off-role | weak fit |
+| Ice | stable | strong | ok but noisy | niche | stable |
+| Magnet | ok | niche | weak fit | strong | ok |
+| Shield | strong | ok | niche | niche | strong |
+| Storm | ok | niche | strong | ok | weak fit |
 
-## 9.2. Build Notes
-### Fire + Cannon
-- Intended Playstyle:
-- Risk:
-- Watchout:
-- Content Value:
-
-### Ice + Laser
-- Intended Playstyle:
-- Risk:
-- Watchout:
-- Content Value:
-
-### Magnet + Magnet Device
-- Intended Playstyle:
-- Risk:
-- Watchout:
-- Content Value:
-
-### Shield + Gun
-- Intended Playstyle:
-- Risk:
-- Watchout:
-- Content Value:
-
-### Storm + Cannon
-- Intended Playstyle:
-- Risk:
-- Watchout:
-- Content Value:
+### Key Prototype Pairings
+- Fire + Cannon: pha cum manh, nguy co over-snowball neutral side.
+- Ice + Laser: ro lane/choke, readability tot cho clip.
+- Magnet + Magnet Device: utility/disrupt fantasy ro nhat.
+- Shield + Gun: build giu dat on dinh nhat.
+- Storm + Cannon: content burst cao, nhung can watch do roi readability.
 
 ---
 
-# 10. Test Session Tracking
+# 7. Phase L Validation Notes
 
-## 10.1. Playtest Log Template
-- Test ID:
-- Date:
-- Build Version:
-- Map:
-- Player Count:
-- AI Count:
-- Test Goal:
-- Result Summary:
-- Strongest Marble:
-- Weakest Marble:
-- Strongest Weapon:
-- Weakest Weapon:
-- Most Watched/Interesting Moment:
-- Readability Problems:
-- Territory Problems:
-- Balance Problems:
-- Next Changes:
+## Required Test Presets
+- `res://resources/config/playtests/match_config_1vAI.tres`
+- `res://resources/config/playtests/match_config_multi_AI.tres`
+- `res://resources/config/playtests/match_config_full_AI_simulation.tres`
 
-## 10.2. Tuning Changes
-| Version | Element Changed | Old Value | New Value | Reason | Result |
-|---|---|---:|---:|---|---|
-| v0.1 |  |  |  |  |  |
-| v0.2 |  |  |  |  |  |
-| v0.3 |  |  |  |  |  |
+## Run Support
+- AppRoot co ho tro boot bang cmd arg `--test-preset 1vai|multi_ai|full_ai`.
+- Su dung `docs/Phase L Validation Log v0.1.md` de ghi territory / balance / readability issue theo tung session.
 
----
-
-# 11. Final Validation Checklist
-
-- [ ] 5 marble có bản sắc số liệu khác nhau rõ
-- [ ] 5 weapon có vai trò khác nhau rõ
-- [ ] Không build nào phá luật territory-centric
-- [ ] Không build nào khó đọc khi xem video
-- [ ] Có ít nhất 3 build tạo content moment mạnh
-- [ ] Tất cả stat đều phục vụ prototype test, không dư thừa
+## Current Watchouts
+- Territory: contested > 6 cell trong thoi gian dai la dau hieu pace reclaim/capture can xem lai.
+- Balance: Fire + Cannon va Shield + Gun la 2 pairing can watch nhieu nhat.
+- Readability: n?u marble chim vao ownership colors, uu tien giam noise truoc khi them effect moi.

@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="MatchConfig" load_steps=14 format=3 uid="uid://b1nxmrgfct2bt"]
+[gd_resource type="Resource" script_class="MatchConfig" load_steps=14 format=3]
 
 [ext_resource type="Script" uid="uid://b5ff6h7scmb2n" path="res://scripts/resources/match_config.gd" id="1"]
 [ext_resource type="Script" uid="uid://pui4toqxpaca" path="res://scripts/resources/marble_definition.gd" id="1_vnybd"]
-[ext_resource type="PackedScene" uid="uid://dbt41rt5240pb" path="res://scenes/marble/marble_actor.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/marble/marble_actor.tscn" id="2"]
 [ext_resource type="Resource" uid="uid://bjdpnkege5hhs" path="res://resources/config/marbles/fire_marble_definition.tres" id="3"]
 [ext_resource type="Resource" uid="uid://comkljjlucqxe" path="res://resources/config/marbles/ice_marble_definition.tres" id="4"]
 [ext_resource type="Resource" uid="uid://c2s5x1m4tlyab" path="res://resources/config/marbles/magnet_marble_definition.tres" id="5"]
@@ -17,10 +17,12 @@
 
 [resource]
 script = ExtResource("1")
-fixed_seed = 0
+start_delay_seconds = 0.6
+player_slots = 1
+ai_slots = 5
+use_fixed_seed = true
+fixed_seed = 202
 marble_scene = ExtResource("2")
 marble_definitions = Array[ExtResource("1_vnybd")]([ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7")])
 weapon_definitions = Array[ExtResource("8_wdef")]([ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13")])
 competitor_weapon_indices = PackedInt32Array(2, 1, 3, 0, 2, 4)
-territory_columns = 26
-territory_rows = 15

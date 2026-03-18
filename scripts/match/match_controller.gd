@@ -87,6 +87,8 @@ func reset_match_state(emit_signal: bool = true) -> void:
 		score_changed.emit(_get_leader_id(), get_leaderboard_summary())
 
 func award_score(competitor_id: int, source: int, amount: float) -> void:
+	if state == GameConstants.MatchFlowState.ENDED:
+		return
 	var competitor := _find_competitor(competitor_id)
 	if competitor == null:
 		push_warning("Unknown competitor id %s in award_score." % competitor_id)
@@ -204,7 +206,8 @@ func _create_competitor(index: int, is_player: bool) -> MatchCompetitorState:
 		display_name = "AI %d" % (index + 1 - match_config.player_slots)
 	var color: Color = COMPETITOR_COLORS[index % COMPETITOR_COLORS.size()]
 	var marble_definition := match_config.get_marble_definition_for_index(index)
-	return MatchCompetitorState.new(index, display_name, is_player, color, marble_definition)
+	var weapon_definition := match_config.get_weapon_definition_for_index(index)
+	return MatchCompetitorState.new(index, display_name, is_player, color, marble_definition, weapon_definition)
 
 func _resolve_seed() -> int:
 	if match_config.use_fixed_seed:

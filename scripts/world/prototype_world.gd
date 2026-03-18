@@ -13,6 +13,10 @@ class_name PrototypeWorld
 @onready var debug_overlay: PrototypeMatchDebugOverlay = $PrototypeMatchDebugOverlay/Control
 
 var _marble_actors: Array[MarbleActor] = []
+var _last_leader_id: int = -1
+var _last_leader_score: float = 0.0
+var _last_leaderboard: Array[Dictionary] = []
+var _is_domination_active: bool = false
 
 func _ready() -> void:
 	add_to_group(GameConstants.GROUP_WORLD)
@@ -36,6 +40,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _ensure_match_config_ready():
 			match_controller.restart_match()
 			get_viewport().set_input_as_handled()
+		return
+
+	if event is InputEventKey and event.pressed and not event.echo:
+		match event.keycode:
+			KEY_C:
+				prototype_camera.cycle_preset()
+				debug_overlay.update_camera_mode(prototype_camera.get_preset_label())
+				get_viewport().set_input_as_handled()
+			KEY_B:
+				debug_overlay.toggle_build_selector()
+				get_viewport().set_input_as_handled()
 
 func _apply_match_config() -> void:
 	if not _ensure_match_config_ready():
@@ -44,17 +59,21 @@ func _apply_match_config() -> void:
 	arena.arena_size = match_config.arena_size
 	arena.rebuild()
 
-	prototype_camera.padding = match_config.camera_padding
-	prototype_camera.min_zoom_factor = match_config.camera_min_zoom
+	prototype_camera.padding = match_config.camera_padding * 0.45
+	prototype_camera.min_zoom_factor = maxf(match_config.camera_min_zoom, 0.72)
 	prototype_camera.max_zoom_factor = match_config.camera_max_zoom
+	prototype_camera.readability_zoom_bias = 0.82
 	prototype_camera.frame_rect(arena.get_bounds())
 
 	debug_overlay.show_waiting_state()
+	debug_overlay.update_camera_mode(prototype_camera.get_preset_label())
 	territory_controller.initialize(match_config, arena.get_bounds())
 	match_controller.initialize(match_config)
 	var roster_summary := match_controller.get_roster_summary()
 	if territory_controller.roster.is_empty():
 		territory_controller.set_roster(roster_summary)
+	debug_overlay.update_build_selector(roster_summary)
+	debug_overlay.set_build_selector_visible(true)
 	_sync_marble_actors(roster_summary)
 	territory_controller.set_marble_actors(_marble_actors)
 	_sync_marble_state_with_match()
@@ -89,9 +108,14 @@ func _connect_territory_signals() -> void:
 
 	territory_controller.score_awarded.connect(_on_territory_score_awarded)
 	territory_controller.debug_state_changed.connect(_on_territory_debug_state_changed)
+	territory_controller.ownership_changed.connect(_on_territory_ownership_changed)
 
 func _on_match_state_changed(new_state: int) -> void:
 	debug_overlay.update_match_state(new_state)
+	if new_state == GameConstants.MatchFlowState.SETUP:
+		debug_overlay.set_build_selector_visible(true)
+	elif new_state == GameConstants.MatchFlowState.RUNNING:
+		debug_overlay.set_build_selector_visible(false)
 	if new_state == GameConstants.MatchFlowState.SETUP:
 		territory_controller.stop_match()
 		territory_controller.reset_grid()
@@ -114,9 +138,14 @@ func _on_timer_updated(time_remaining_seconds: float, elapsed_seconds: float) ->
 	debug_overlay.update_timer(time_remaining_seconds, elapsed_seconds)
 
 func _on_score_changed(leader_id: int, leaderboard: Array[Dictionary]) -> void:
+	_handle_score_events(leader_id, leaderboard)
 	debug_overlay.update_scoreboard(leader_id, leaderboard)
+	_refresh_spectator_state(leaderboard)
 
 func _on_match_started(match_seed: int) -> void:
+	_last_leader_id = -1
+	_last_leader_score = 0.0
+	_is_domination_active = false
 	debug_overlay.update_seed(match_seed)
 
 func _on_match_ended(result: MatchResult) -> void:
@@ -124,9 +153,29 @@ func _on_match_ended(result: MatchResult) -> void:
 
 func _on_territory_score_awarded(competitor_id: int, source: int, amount: float) -> void:
 	match_controller.award_score(competitor_id, source, amount)
+	if source == GameConstants.ScoreSource.TERRITORY_STEAL:
+		debug_overlay.show_event_banner("Territory stolen by %s" % _get_competitor_name(competitor_id), Color(1.0, 0.88, 0.58, 0.98))
+	elif source == GameConstants.ScoreSource.CONTROL_STREAK:
+		debug_overlay.show_event_banner("Streak: %s is snowballing" % _get_competitor_name(competitor_id), Color(1.0, 0.72, 0.42, 0.98))
 
 func _on_territory_debug_state_changed(lines: PackedStringArray) -> void:
 	debug_overlay.update_territory_summary(lines)
+
+func _on_territory_ownership_changed(owner_percentages: Dictionary, contested_cells: int) -> void:
+	_refresh_spectator_state(match_controller.get_leaderboard_summary(), owner_percentages, contested_cells)
+	var leader_id := _find_ownership_leader_id(owner_percentages)
+	var leader_share := float(owner_percentages.get(leader_id, 0.0))
+	if leader_id >= 0 and leader_share >= match_config.domination_threshold:
+		if not _is_domination_active:
+			_is_domination_active = true
+			debug_overlay.show_event_banner("Domination: %s controls the map" % _get_competitor_name(leader_id), Color(1.0, 0.9, 0.58, 0.98), 1.8)
+	else:
+		_is_domination_active = false
+
+func _on_marble_eliminated(attacker_id: int, victim_id: int) -> void:
+	if attacker_id >= 0 and attacker_id != victim_id:
+		match_controller.award_score(attacker_id, GameConstants.ScoreSource.ELIMINATION, match_config.elimination_score_bonus)
+		debug_overlay.show_event_banner("Streak hit: %s knocked out %s" % [_get_competitor_name(attacker_id), _get_competitor_name(victim_id)], Color(1.0, 0.78, 0.64, 0.98), 1.4)
 
 func _sync_marble_actors(roster_summary: Array[Dictionary]) -> void:
 	_clear_marble_actors()
@@ -145,6 +194,8 @@ func _sync_marble_actors(roster_summary: Array[Dictionary]) -> void:
 		spawn_root.add_child(marble_actor)
 		var competitor_id := int(entry.get("competitor_id", 0))
 		marble_actor.configure(entry, arena.get_bounds(), match_config, match_controller.active_seed + competitor_id + 31)
+		if not marble_actor.eliminated.is_connected(_on_marble_eliminated):
+			marble_actor.eliminated.connect(_on_marble_eliminated)
 		_marble_actors.append(marble_actor)
 
 func _clear_marble_actors() -> void:
@@ -161,6 +212,7 @@ func _sync_marble_state_with_match() -> void:
 		territory_controller.start_match(match_controller.active_seed)
 	else:
 		_stop_marble_actors()
+	_refresh_spectator_state(match_controller.get_leaderboard_summary())
 
 func _reset_marble_actors_for_match(match_seed: int) -> void:
 	for marble_actor in _marble_actors:
@@ -182,3 +234,59 @@ func _stop_marble_actors() -> void:
 	for marble_actor in _marble_actors:
 		if is_instance_valid(marble_actor):
 			marble_actor.stop_match()
+
+
+func _refresh_spectator_state(leaderboard: Array[Dictionary], owner_percentages: Dictionary = {}, contested_cells: int = -1) -> void:
+	if leaderboard.is_empty():
+		return
+	var resolved_owner_percentages := owner_percentages if not owner_percentages.is_empty() else territory_controller.get_owner_percentages()
+	var resolved_contested_cells := contested_cells if contested_cells >= 0 else territory_controller.get_contested_cell_count()
+	debug_overlay.update_spectator_snapshot(leaderboard, resolved_owner_percentages, resolved_contested_cells)
+	var leader_id := int(leaderboard[0].get("competitor_id", -1))
+	var scoreboard_by_id := {}
+	for entry in leaderboard:
+		scoreboard_by_id[int(entry.get("competitor_id", -1))] = entry
+	for marble_actor in _marble_actors:
+		if not is_instance_valid(marble_actor):
+			continue
+		var competitor_id := marble_actor.competitor_id
+		var summary: Dictionary = scoreboard_by_id.get(competitor_id, {})
+		marble_actor.update_spectator_state(
+			competitor_id == leader_id,
+			float(resolved_owner_percentages.get(competitor_id, 0.0)),
+			float(summary.get("total_score", 0.0))
+		)
+
+
+func _handle_score_events(leader_id: int, leaderboard: Array[Dictionary]) -> void:
+	if leaderboard.is_empty() or leader_id < 0:
+		_last_leaderboard = leaderboard.duplicate(true)
+		return
+	var leader_score := float(leaderboard[0].get("total_score", 0.0))
+	if _last_leader_id >= 0 and leader_id != _last_leader_id:
+		var takeover_margin := _last_leader_score - leader_score
+		if takeover_margin >= -6.0:
+			debug_overlay.show_event_banner("Comeback: %s takes the lead" % _get_competitor_name(leader_id), Color(0.72, 1.0, 0.8, 0.98), 1.8)
+	if leader_score >= maxf(_last_leader_score + 10.0, 20.0) and _last_leader_id == leader_id:
+		debug_overlay.show_event_banner("Streak: %s opens a gap" % _get_competitor_name(leader_id), Color(1.0, 0.76, 0.44, 0.96), 1.4)
+	_last_leader_id = leader_id
+	_last_leader_score = leader_score
+	_last_leaderboard = leaderboard.duplicate(true)
+
+func _get_competitor_name(competitor_id: int) -> String:
+	for entry in match_controller.get_roster_summary():
+		if int(entry.get("competitor_id", -1)) == competitor_id:
+			return String(entry.get("display_name", "Unknown"))
+	return "Unknown"
+
+
+func _find_ownership_leader_id(owner_percentages: Dictionary) -> int:
+	var best_id := -1
+	var best_value := -1.0
+	for competitor_id_variant in owner_percentages.keys():
+		var competitor_id := int(competitor_id_variant)
+		var owned_percent := float(owner_percentages.get(competitor_id, 0.0))
+		if owned_percent > best_value:
+			best_value = owned_percent
+			best_id = competitor_id
+	return best_id

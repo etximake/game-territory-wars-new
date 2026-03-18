@@ -129,7 +129,7 @@
 
 - [ ] Chốt va chạm có gây damage hay không.
 - [ ] Chốt va chạm có gây knockback hay không.
-- [ ] Chốt attack có tương tác với territory thế nào.
+- [ ] Chốt attack có tương tác với territory thế nào.ok
 - [ ] Chốt elimination model:
 - [ ] `No death, only disruption` hoặc
 - [ ] `Temporary out + short respawn`

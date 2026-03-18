@@ -5,7 +5,7 @@ class_name MatchConfig
 @export_range(60.0, 600.0, 1.0, "or_greater") var match_duration_seconds: float = 240.0
 @export_range(0.0, 10.0, 0.1, "or_greater") var start_delay_seconds: float = 1.0
 @export_range(0, 10000, 1, "or_greater") var score_target: int = 150
-@export_range(1, 4, 1, "or_greater") var player_slots: int = 1
+@export_range(0, 4, 1, "or_greater") var player_slots: int = 1
 @export_range(1, 12, 1, "or_greater") var ai_slots: int = 5
 @export var arena_size: Vector2 = GameConstants.ARENA_DEFAULT_SIZE
 @export var camera_padding: Vector2 = GameConstants.CAMERA_DEFAULT_PADDING
@@ -16,6 +16,14 @@ class_name MatchConfig
 @export var fixed_seed: int = 1001
 @export var marble_scene: PackedScene
 @export var marble_definitions: Array[MarbleDefinition] = []
+@export var weapon_definitions: Array[WeaponDefinition] = []
+@export var competitor_weapon_indices: PackedInt32Array = PackedInt32Array([2, 1, 3, 0, 2, 4])
+@export_range(0.0, 10.0, 0.1, "or_greater") var collision_damage: float = 8.0
+@export_range(0.0, 10.0, 0.1, "or_greater") var collision_pressure_bonus: float = 0.12
+@export_range(0.0, 10.0, 0.1, "or_greater") var weapon_pressure_bonus_scale: float = 1.0
+@export var use_respawn_elimination: bool = true
+@export_range(0.1, 20.0, 0.1, "or_greater") var respawn_delay_seconds: float = 2.8
+@export_range(0.0, 100.0, 0.5, "or_greater") var elimination_score_bonus: float = 8.0
 @export var enable_debug_score_simulation: bool = false
 @export_range(0.1, 5.0, 0.1, "or_greater") var debug_score_tick_seconds: float = 1.0
 @export_range(1, 100, 1, "or_greater") var debug_score_award_min: int = 2
@@ -53,3 +61,13 @@ func get_marble_definition_for_index(index: int) -> MarbleDefinition:
 		return null
 	var safe_index := posmod(index, marble_definitions.size())
 	return marble_definitions[safe_index]
+
+func get_weapon_definition_for_index(index: int) -> WeaponDefinition:
+	if weapon_definitions.is_empty():
+		return null
+	if not competitor_weapon_indices.is_empty():
+		var mapped_index := competitor_weapon_indices[posmod(index, competitor_weapon_indices.size())]
+		if mapped_index >= 0 and mapped_index < weapon_definitions.size():
+			return weapon_definitions[mapped_index]
+	var safe_index := posmod(index, weapon_definitions.size())
+	return weapon_definitions[safe_index]

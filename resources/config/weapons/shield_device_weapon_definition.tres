@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+weapon_id = &"weapon.shield_device"
+display_name = "Shield Device"
+category = "defensive_utility"
+damage = 6.0
+range = 170.0
+cooldown_seconds = 2.4
+impact_force = 40.0
+guard_duration_seconds = 1.5
+guard_strength = 0.48
+influence_bonus = 0.22
+readability_color = Color(0.74, 1, 0.84, 1)
+readability_notes = "Stabilizes control windows and supports anti-recapture play."

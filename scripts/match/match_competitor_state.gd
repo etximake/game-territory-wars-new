@@ -7,15 +7,17 @@ var display_name: String
 var is_player: bool
 var color: Color
 var marble_definition: MarbleDefinition
+var weapon_definition: WeaponDefinition
 var total_score: float = 0.0
 var score_breakdown: Dictionary = {}
 
-func _init(id: int, name: String, player_controlled: bool, competitor_color: Color, marble_resource: MarbleDefinition = null) -> void:
+func _init(id: int, name: String, player_controlled: bool, competitor_color: Color, marble_resource: MarbleDefinition = null, weapon_resource: WeaponDefinition = null) -> void:
 	competitor_id = id
 	display_name = name
 	is_player = player_controlled
 	color = competitor_color
 	marble_definition = marble_resource
+	weapon_definition = weapon_resource
 
 func add_score(source: int, amount: float) -> void:
 	total_score += amount
@@ -32,6 +34,7 @@ func to_summary() -> Dictionary:
 		"is_player": is_player,
 		"color": color,
 		"marble_definition": marble_definition,
+		"weapon_definition": weapon_definition,
 		"total_score": total_score,
 		"score_breakdown": score_breakdown.duplicate(true),
 	}
